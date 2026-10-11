@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldLineLimits
@@ -21,14 +19,12 @@ import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldLabelPosition
@@ -40,17 +36,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.testapp.R
 
-@Preview(showSystemUi = true , showBackground = true)
 @Composable
-fun SocialLogins() {
+fun SocialLogins(
+    afterLogin : (name : String) -> Unit
+) {
 
-    val usernameState = rememberTextFieldState("") // MOST OPTIMIZED WAY FOR WORKING WITH OUTLINEDTEXTFIELD OR TEXTFIELD
+    val usernameState =
+        rememberTextFieldState("") // MOST OPTIMIZED WAY FOR WORKING WITH OUTLINEDTEXTFIELD OR TEXTFIELD
     val passwordState = rememberTextFieldState("")
+
+    fun handleLogin(){
+        afterLogin(usernameState.text.toString())
+    }
 
     Column(
         modifier = Modifier
@@ -86,7 +87,11 @@ fun SocialLogins() {
                 label = { Text("Username") },
                 labelPosition = TextFieldLabelPosition.Above(),
                 placeholder = { Text("Enter your username") },
-                lineLimits = TextFieldLineLimits.SingleLine
+                lineLimits = TextFieldLineLimits.SingleLine,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
             Box(
                 contentAlignment = Alignment.CenterEnd
@@ -96,7 +101,8 @@ fun SocialLogins() {
                     label = { Text("Password") },
                     labelPosition = TextFieldLabelPosition.Above(),
                     placeholder = { Text("Enter your password") },
-                    textObfuscationMode = TextObfuscationMode.Hidden
+                    textObfuscationMode = TextObfuscationMode.Hidden,
+                    colors = OutlinedTextFieldDefaults.colors(focusedTextColor = Color.Black , unfocusedTextColor = Color.Black)
                 )
 
                 Icon(
@@ -110,19 +116,21 @@ fun SocialLogins() {
                 )
             }
             FilledTonalButton(
-                enabled = usernameState.text.trim().isNotEmpty() && passwordState.text.trim().isNotEmpty(),
-                onClick = {},
+                enabled = usernameState.text.trim().isNotEmpty() && passwordState.text.trim()
+                    .isNotEmpty(),
+                onClick = { handleLogin() },
                 modifier = Modifier.fillMaxWidth(0.95f),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = Color.Black,
-                    contentColor = Color.White
+                    contentColor = Color.White,
+                    disabledContentColor = Color.White,
+                    disabledContainerColor = Color.Gray
                 ),
                 elevation = ButtonDefaults.filledTonalButtonElevation(
                     defaultElevation = 2.dp,
                     pressedElevation = 5.dp
                 ),
                 shape = RoundedCornerShape(6.dp)
-
             ) {
                 Text(
                     text = "Login"

@@ -18,7 +18,8 @@ class MainActivity : ComponentActivity() {
             TestAppTheme {
 //                SocialLogins()
 //                StateManagement()
-                Alert()
+//                Alert()
+                AppNavigation()
             }
         }
     }
