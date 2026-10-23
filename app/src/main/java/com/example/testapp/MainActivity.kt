@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.example.testapp.alert_dialog.Alert
 import com.example.testapp.login.Input
 import com.example.testapp.login.SocialLogins
+import com.example.testapp.posts.PostContainer
 import com.example.testapp.state.StateManagement
 import com.example.testapp.ui.theme.TestAppTheme
 

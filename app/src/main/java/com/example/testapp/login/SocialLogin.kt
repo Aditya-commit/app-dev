@@ -116,8 +116,7 @@ fun SocialLogins(
                 )
             }
             FilledTonalButton(
-                enabled = usernameState.text.trim().isNotEmpty() && passwordState.text.trim()
-                    .isNotEmpty(),
+                enabled = usernameState.text.trim().isNotEmpty() && passwordState.text.trim().isNotEmpty(),
                 onClick = { handleLogin() },
                 modifier = Modifier.fillMaxWidth(0.95f),
                 colors = ButtonDefaults.filledTonalButtonColors(
