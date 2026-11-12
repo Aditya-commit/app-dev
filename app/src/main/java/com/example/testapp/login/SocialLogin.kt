@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
@@ -23,10 +24,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedSecureTextField
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldLabelPosition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,19 +40,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.testapp.R
+import com.example.testapp.views.login.UsernameViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun SocialLogins(
-    afterLogin : (name : String) -> Unit
+    afterLogin : (name : String) -> Unit,
+    usernameViewModel : UsernameViewModel = viewModel()
 ) {
 
-    val usernameState =
-        rememberTextFieldState("") // MOST OPTIMIZED WAY FOR WORKING WITH OUTLINEDTEXTFIELD OR TEXTFIELD
+    val usernameState by usernameViewModel.username.collectAsStateWithLifecycle() // collectAsStateWithLifecycle SUBSCRIBES THIS VARIABLE WITH THE VIEW MODEL STATE CHANGES
+    val usernameInteractionSource = remember { MutableInteractionSource() }
+    val usernameFocusRequester = remember { FocusRequester() }
+
     val passwordState = rememberTextFieldState("")
 
+    val isInputFocused = usernameInteractionSource.collectIsFocusedAsState()
+
+
     fun handleLogin(){
-        afterLogin(usernameState.text.toString())
+        afterLogin(usernameState)
     }
 
     Column(
@@ -82,17 +97,40 @@ fun SocialLogins(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 10.dp)
         ) {
-            OutlinedTextField(
-                state = usernameState,
-                label = { Text("Username") },
-                labelPosition = TextFieldLabelPosition.Above(),
-                placeholder = { Text("Enter your username") },
-                lineLimits = TextFieldLineLimits.SingleLine,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+            Column {
+                Text(
+                    modifier = Modifier.clickable(
+                        null,
+                        indication = null,
+                        enabled = true,
+                        onClick = { usernameFocusRequester.requestFocus() },
+                    ),
+                    text = "Username",
+                    fontSize = 12.sp,
+                    color = if (isInputFocused.value == true) Color.Blue else Color.DarkGray,
                 )
-            )
+                TextField(
+                    modifier = Modifier.border(
+                        width = 1.5.dp
+                        , color = if (isInputFocused.value == true) Color.Blue else Color.Gray
+                        , shape = RoundedCornerShape(size = 6.dp)
+                    ).
+                    focusRequester(usernameFocusRequester),
+                    value = usernameState,
+                    onValueChange = { usernameViewModel.updateUsername(it) },
+                    placeholder = { Text("Enter your username") },
+                    singleLine = true,
+                    interactionSource = usernameInteractionSource,
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.Black ,
+                        unfocusedTextColor = Color.Black ,
+                        unfocusedContainerColor = Color.Transparent ,
+                        focusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
+                )
+            }
             Box(
                 contentAlignment = Alignment.CenterEnd
             ) {
@@ -116,7 +154,7 @@ fun SocialLogins(
                 )
             }
             FilledTonalButton(
-                enabled = usernameState.text.trim().isNotEmpty() && passwordState.text.trim().isNotEmpty(),
+                enabled = usernameState.trim().isNotEmpty() && passwordState.text.trim().isNotEmpty(),
                 onClick = { handleLogin() },
                 modifier = Modifier.fillMaxWidth(0.95f),
                 colors = ButtonDefaults.filledTonalButtonColors(

@@ -7,13 +7,16 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.testapp.login.SocialLogins
 import com.example.testapp.platform.screens.Layout
 import com.example.testapp.posts.PostContainer
+import com.example.testapp.views.login.UsernameViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -32,15 +35,16 @@ data object PlatformScreenKey : NavKey
 fun AppNavigation() {
     val backStack = rememberNavBackStack(LoginScreenKey)
 
+    fun afterLogin(name : String) : Unit {
+
+    }
+
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
             entry<LoginScreenKey> {
-                SocialLogins { name ->
-                    backStack.clear()
-                    backStack.add(PlatformScreenKey)
-                }
+                SocialLogins(afterLogin = { afterLogin(it)})
             }
             entry<PlatformScreenKey>{
                 Layout()
