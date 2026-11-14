@@ -36,12 +36,18 @@ fun AppNavigation() {
     val backStack = rememberNavBackStack(LoginScreenKey)
 
     fun afterLogin(name : String) : Unit {
-
+        backStack.clear()
+        backStack.add(PlatformScreenKey)
     }
 
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        // ADD THIS: Scopes ViewModels and saved state to each navigation screen!
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         entryProvider = entryProvider {
             entry<LoginScreenKey> {
                 SocialLogins(afterLogin = { afterLogin(it)})

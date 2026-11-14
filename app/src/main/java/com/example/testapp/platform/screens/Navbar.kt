@@ -2,6 +2,7 @@ package com.example.testapp.platform.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -23,6 +24,7 @@ fun Navbar(currentRoute : NavKey , navigateTo: (newRoutes: Routes) -> Unit) {
     val navItems = listOf(
         NavItem(label = "Home", icon = Icons.Default.Home , url= Routes.HomeScreen),
         NavItem(label = "Notification", icon = Icons.Default.Notifications , url= Routes.NotificationScreen),
+        NavItem(label = "Carts", icon = Icons.Default.AddShoppingCart , url= Routes.AddToCartScreen),
         NavItem(label = "Settings", icon = Icons.Default.Settings , url= Routes.SettingsScreen),
     )
 

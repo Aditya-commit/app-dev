@@ -6,12 +6,15 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.serialization.Serializable
 
@@ -24,6 +27,9 @@ sealed interface Routes : NavKey {
 
     @Serializable
     data object NotificationScreen : Routes;
+
+    @Serializable
+    data object AddToCartScreen : Routes;
 }
 
 @Composable
@@ -56,6 +62,11 @@ fun Layout(){
             NavDisplay(
                 backStack=backStack,
                 onBack = {backStack.removeLastOrNull()},
+                // ADD THIS: Scopes ViewModels and saved state to each navigation screen!
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator()
+                ),
                 entryProvider = entryProvider {
                     entry<Routes.HomeScreen>{
                         HomeScreen()
@@ -65,6 +76,9 @@ fun Layout(){
                     }
                     entry<Routes.NotificationScreen>{
                         NotificationScreen()
+                    }
+                    entry<Routes.AddToCartScreen>{
+                        CartScreen()
                     }
                 },
                 transitionSpec = {
