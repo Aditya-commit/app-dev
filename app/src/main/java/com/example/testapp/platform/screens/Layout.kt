@@ -51,6 +51,7 @@ fun Layout(){
 //                    currentScreen = url
 //                }
                 if(currentRoute != newRoute){
+                    backStack.clear()
                     backStack.add(newRoute)
                 }
             }

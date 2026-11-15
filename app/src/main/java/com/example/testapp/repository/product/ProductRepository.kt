@@ -18,7 +18,7 @@ class ProductRepository : ProductRepoInterface {
 
     override suspend fun getProducts(): Result<ProductsList> = withContext(Dispatchers.IO){
         try {
-            val response : HttpResponse = Http.api.get("/products?limit=10&skip=10")
+            val response : HttpResponse = Http.api.get("/products?limit=100&skip=10")
             val body : ProductsList = response.body<ProductsList>()
             Result.success(body)
         }

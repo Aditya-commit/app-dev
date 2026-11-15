@@ -23,6 +23,10 @@ class ProductViewModel(private val productRepo: ProductRepository = ProductRepos
     private val _uiState = MutableStateFlow(UIState())
     val uiState: StateFlow<UIState> = _uiState.asStateFlow()
 
+    init {
+        loadData()
+    }
+
     fun loadData() {
         _uiState.update { currentState ->
             currentState.copy(

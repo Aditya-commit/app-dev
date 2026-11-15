@@ -45,7 +45,7 @@ fun AppNavigation() {
         onBack = { backStack.removeLastOrNull() },
         // ADD THIS: Scopes ViewModels and saved state to each navigation screen!
         entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberSaveableStateHolderNavEntryDecorator(), // aves and restores UI-level state (rememberSaveable values) for each screen in the backstack—even when a screen is temporarily hidden behind another screen or after a phone rotation 1) The current scroll position of a LazyColumn (which item index you scrolled down to) 2) Text typed into a TextField that uses rememberSaveable (like rememberTextFieldState
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = entryProvider {
