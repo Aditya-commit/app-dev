@@ -1,5 +1,6 @@
 package com.example.testapp
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import com.example.testapp.ui.theme.TestAppTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val context : Context = this
         enableEdgeToEdge()
         setContent {
             TestAppTheme {
@@ -23,5 +25,35 @@ class MainActivity : ComponentActivity() {
                 AppNavigation()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        println("Activity started")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("Resuming Activity")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        println("Restarting activity")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println("Pausing activity")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        println("Activity stopped")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("Activity is getting destroyed")
     }
 }
